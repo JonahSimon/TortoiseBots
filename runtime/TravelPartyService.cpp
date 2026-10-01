@@ -333,8 +333,6 @@ void TravelPartyService::Spawn()
     }
     sObjectMgr.AddGroup(group);
 
-    leader->TeleportTo(pick.m.map, pick.m.x, pick.m.y, pick.m.z, 0.f);
-
     Party party;
     party.leaderGuid = leader->GetObjectGuid();
     party.leaderName = leader->GetName();
@@ -354,6 +352,9 @@ void TravelPartyService::Spawn()
         party.insideO = dest.inO;
     }
 
+    // All AI changes before any teleport: a teleport to another map takes the bot off its map until it
+    // lands, and ResetStrategies asserts GetMap() (crashed the first tb5 boot).
+    std::vector<Player*> members;
     for (size_t i = 1; i < crew.size(); ++i)
     {
         Player* member = crew[i];
@@ -364,15 +365,19 @@ void TravelPartyService::Spawn()
             continue;
         }
 
-        member->TeleportTo(pick.m.map, pick.m.x + frand(-4.f, 4.f), pick.m.y + frand(-4.f, 4.f), pick.m.z, 0.f);
         memberAI->SetMaster(leader);
         memberAI->ResetStrategies();
         memberAI->ChangeStrategy("+follow,-grind,-rpg,-travel", BotState::BOT_STATE_NON_COMBAT);
         party.memberGuids.push_back(member->GetObjectGuid());
+        members.push_back(member);
     }
 
     // The leader is driven by the tick below; its own autonomous strategies would pick another target.
     leaderAI->ChangeStrategy(sPlayerbotAIConfig.travelPartyLeaderStrip, BotState::BOT_STATE_NON_COMBAT);
+
+    leader->TeleportTo(pick.m.map, pick.m.x, pick.m.y, pick.m.z, 0.f);
+    for (Player* member : members)
+        member->TeleportTo(pick.m.map, pick.m.x + frand(-4.f, 4.f), pick.m.y + frand(-4.f, 4.f), pick.m.z, 0.f);
 
     // 5 min of slack plus 2 s per yard; the stall detector is the real guard against a wedged march.
     uint32 const now = (uint32)time(nullptr);
@@ -394,6 +399,21 @@ void TravelPartyService::Update()
         return;
 
     uint32 const now = (uint32)time(nullptr);
+
+    // Disbanded while teleporting: reset once back on a map, drop if logged out.
+    for (auto it = m_pendingReset.begin(); it != m_pendingReset.end();)
+    {
+        Player* bot = sObjectMgr.GetPlayer(*it);
+        PlayerbotAI* botAI = bot ? PlayerbotAIStorage::Instance().GetAI(bot) : nullptr;
+        if (bot && botAI && !bot->IsInWorld())
+        {
+            ++it;
+            continue;
+        }
+        if (botAI)
+            botAI->ResetStrategies();
+        it = m_pendingReset.erase(it);
+    }
 
     if (sPlayerbotAIConfig.travelPartySpawnInterval && now - m_lastSpawn >= sPlayerbotAIConfig.travelPartySpawnInterval)
     {
@@ -428,6 +448,14 @@ void TravelPartyService::Update()
             }
             else
                 ++it;
+            continue;
+        }
+
+        // Still travelling to the muster (a teleport to another map lands a tick or more later): wait,
+        // or the checks below read "not in world" as a lost leader. The deadline still applies.
+        if (leader && leader->IsBeingTeleported() && now < p.deadline)
+        {
+            ++it;
             continue;
         }
 
@@ -814,7 +842,11 @@ void TravelPartyService::Disband(Party& p)
         if (PlayerbotAI* memberAI = PlayerbotAIStorage::Instance().GetAI(member))
         {
             memberAI->SetMaster(nullptr);
-            memberAI->ResetStrategies();
+            // Mid-teleport (off its map) ResetStrategies would assert; Update does it once it lands.
+            if (member->IsInWorld())
+                memberAI->ResetStrategies();
+            else
+                m_pendingReset.push_back(guid);
         }
     }
 }
