@@ -722,6 +722,15 @@ void BotManager::OnPlayerLogin(::Player* player)
         TB_LOG_DETAIL("TortoiseBots: bot %s received its level-bound skills and professions.", player->GetName());
     }
 
+    // AiPlayerbot.RandomBotForcePvp: set the same preference flag /pvp does. A bare SetPvP(true)
+    // is dropped again by Player::UpdatePvPFlagTimer, and Player::LoadFromDB clears the
+    // preference, so it goes on at every login.
+    if (record.random && sPlayerbotAIConfig.randomBotForcePvp && !player->IsPvPDesired())
+    {
+        player->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_PVP_DESIRED);
+        player->UpdatePvP(true);
+    }
+
     // One-shot random scatter on headless login only; fail-closed, no DB mutation, no homebind.
     // Must run AFTER gear seeding and skills so the bot is fully initialized before any map transfer.
     TryRandomTeleport(player, record);

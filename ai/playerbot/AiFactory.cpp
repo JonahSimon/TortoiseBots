@@ -1093,6 +1093,15 @@ void AiFactory::AddDefaultNonCombatStrategies(Player* player, PlayerbotAI* const
             nonCombatEngine->addStrategy("start duel");
         }
 
+        // Only this share of free bots go looking for open-world PvP; players can flip any single
+        // bot with "nc +world pvp" / "nc -world pvp".
+        if (sPlayerbotAIConfig.worldPvpSeek && urand(0, 99) < sPlayerbotAIConfig.worldPvpSeekBotPercent)
+        {
+            nonCombatEngine->addStrategy("world pvp");
+            if (sPlayerbotAIConfig.hasLog("pvp_seek.csv"))
+                sPlayerbotAIConfig.log("pvp_seek.csv", (sPlayerbotAIConfig.GetTimestampStr() + "+00,grant," + player->GetName()).c_str());
+        }
+
         if (!player->GetGroup() || facade->IsGroupLeader())
         {
             // let 25% of random not grouped (or group leader) bots help other players

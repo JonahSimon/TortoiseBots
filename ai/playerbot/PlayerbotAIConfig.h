@@ -385,6 +385,13 @@ public:
     bool globalSoundEffects;
     bool shareTargets;
 	std::list<uint32> pvpProhibitedZoneIds;
+    // Keep random bots PvP flagged everywhere, as if they had typed /pvp.
+    bool randomBotForcePvp = false;
+    // Bots holding the "world pvp" strategy attack nearby flagged enemy players outside
+    // battlegrounds. 0 = off, 1 = real players only, 2 = bots too.
+    uint32 worldPvpSeek = 0;
+    // Share (0-100) of free bots given the "world pvp" strategy.
+    uint32 worldPvpSeekBotPercent = 25;
     bool enableGreet;
     // Seconds before the same real player may be greeted again by the same bot.
     uint32 greetCooldown;

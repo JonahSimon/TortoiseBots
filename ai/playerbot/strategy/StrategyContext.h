@@ -85,6 +85,7 @@ namespace ai
             creators["threat"] = [](PlayerbotAI* ai) { return new ThreatStrategy(ai); };
             creators["tell target"] = [](PlayerbotAI* ai) { return new TellTargetStrategy(ai); };
             creators["pvp"] = [](PlayerbotAI* ai) { return new AttackEnemyPlayersStrategy(ai); };
+            creators["world pvp"] = [](PlayerbotAI* ai) { return new WorldPvpStrategy(ai); };
             creators["return"] = [](PlayerbotAI* ai) { return new ReturnStrategy(ai); };
             creators["custom"] = [](PlayerbotAI* ai) { return new CustomStrategy(ai); };
             creators["reveal"] = [](PlayerbotAI* ai) { return new RevealStrategy(ai); };

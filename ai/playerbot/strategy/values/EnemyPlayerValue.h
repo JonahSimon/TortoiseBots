@@ -18,6 +18,7 @@ namespace ai
 
     private:
         void ApplyFilter(std::list<ObjectGuid>& targets, bool getOne);
+        bool IsWorldPvpTarget(Player* enemy);
     };
 
     class HasEnemyPlayersValue : public BoolCalculatedValue, public Qualified
