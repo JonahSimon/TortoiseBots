@@ -9,6 +9,7 @@
 #include "../ai/playerbot/strategy/actions/MovementActions.h"
 #include "Group/Group.h"
 #include "Maps/PathFinder.h"
+#include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "World.h"
@@ -403,7 +404,7 @@ void TravelPartyService::Update()
     // Disbanded while teleporting: reset once back on a map, drop if logged out.
     for (auto it = m_pendingReset.begin(); it != m_pendingReset.end();)
     {
-        Player* bot = sObjectMgr.GetPlayer(*it);
+        Player* bot = ObjectAccessor::FindPlayerNotInWorld(*it);
         PlayerbotAI* botAI = bot ? PlayerbotAIStorage::Instance().GetAI(bot) : nullptr;
         if (bot && botAI && !bot->IsInWorld())
         {
@@ -424,7 +425,7 @@ void TravelPartyService::Update()
     for (auto it = m_parties.begin(); it != m_parties.end();)
     {
         Party& p = *it;
-        Player* leader = sObjectMgr.GetPlayer(p.leaderGuid);
+        Player* leader = ObjectAccessor::FindPlayerNotInWorld(p.leaderGuid);
         bool done = false;
 
         // Entering: far teleports are asynchronous. Wait for everyone to land before disbanding, or
@@ -808,7 +809,7 @@ void TravelPartyService::Update()
                   << " active=" << lAI->AllowActivity(ALL_ACTIVITY, true)
                   << " groupSpread=" << (int)p.maxMemberDist << " lvl=" << leader->GetLevel()
                   // The leader's own last action found the "move to loot" wedge (G1); keep it.
-                  << " lastAct=" << (lAI->GetCurrentEngine() ? lAI->GetCurrentEngine()->GetLastAction() : "<no engine>")
+                  << " lastAct=" << (lAI->GetCurrentEngine() ? lAI->GetCurrentEngine()->GetLastAction().substr(0, 160) : "<no engine>")
                   << " strat=";
                 for (auto const& sv : lAI->GetStrategies(BotState::BOT_STATE_NON_COMBAT))
                     o << sv << "|";
@@ -828,7 +829,7 @@ void TravelPartyService::Update()
 
 void TravelPartyService::Disband(Party& p)
 {
-    if (Player* leader = sObjectMgr.GetPlayer(p.leaderGuid))
+    if (Player* leader = ObjectAccessor::FindPlayerNotInWorld(p.leaderGuid))
         if (Group* group = leader->GetGroup())
             group->Disband(true);
 
@@ -836,7 +837,7 @@ void TravelPartyService::Disband(Party& p)
     for (ObjectGuid const& guid : p.memberGuids)
     {
         BotActivityLeaseManager::Instance().Release(guid.GetCounter(), BotActivity::Dungeon);
-        Player* member = sObjectMgr.GetPlayer(guid);
+        Player* member = ObjectAccessor::FindPlayerNotInWorld(guid);
         if (!member)
             continue;
         if (PlayerbotAI* memberAI = PlayerbotAIStorage::Instance().GetAI(member))
