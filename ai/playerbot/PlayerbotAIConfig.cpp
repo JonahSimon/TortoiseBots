@@ -274,6 +274,18 @@ bool PlayerbotAIConfig::Initialize()
     randomBotForcePvp = config.GetBoolDefault("AiPlayerbot.RandomBotForcePvp", false);
     worldPvpSeek = config.GetIntDefault("AiPlayerbot.WorldPvpSeek", 0);
     worldPvpSeekBotPercent = config.GetIntDefault("AiPlayerbot.WorldPvpSeekBotPercent", 25);
+    travelParties = config.GetBoolDefault("AiPlayerbot.TravelParties", false);
+    travelPartySpawnInterval = config.GetIntDefault("AiPlayerbot.TravelPartySpawnInterval", 60);
+    travelPartyMaxConcurrent = std::max(1, config.GetIntDefault("AiPlayerbot.TravelPartyMaxConcurrent", 10));
+    travelPartyClosestTownPct = std::min(100, config.GetIntDefault("AiPlayerbot.TravelPartyClosestTownPct", 0));
+    travelPartyRaidPct = std::min(100, config.GetIntDefault("AiPlayerbot.TravelPartyRaidPct", 0));
+    travelPartyLowLevelBand = config.GetIntDefault("AiPlayerbot.TravelPartyLowLevelBand", 30);
+    travelPartyLowLevelMaxRoute = config.GetFloatDefault("AiPlayerbot.TravelPartyLowLevelMaxRoute", 6000.0f);
+    travelPartyRequirePlayerZone = config.GetBoolDefault("AiPlayerbot.TravelPartyRequirePlayerZone", false);
+    travelPartyEnterInstance = config.GetBoolDefault("AiPlayerbot.TravelPartyEnterInstance", false);
+    travelPartyMaxDeaths = config.GetIntDefault("AiPlayerbot.TravelPartyMaxDeaths", 3);
+    travelPartyArriveZ = config.GetFloatDefault("AiPlayerbot.TravelPartyArriveZ", 150.0f);
+    travelPartyLeaderStrip = config.GetStringDefault("AiPlayerbot.TravelPartyLeaderStrip", "-travel,-grind,-rpg,-loot,-gather");
 
 
     LoadList<std::list<uint32> >(config.GetStringDefault("AiPlayerbot.RandomBotQuestIds", "7848,3802,5505,6502,7761,9378"), randomBotQuestIds);

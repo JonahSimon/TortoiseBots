@@ -392,6 +392,19 @@ public:
     uint32 worldPvpSeek = 0;
     // Share (0-100) of free bots given the "world pvp" strategy.
     uint32 worldPvpSeekBotPercent = 25;
+    // Overland travel parties (runtime/TravelPartyService). See aiplayerbot.conf.dist.in.
+    bool travelParties = false;
+    uint32 travelPartySpawnInterval = 60;
+    uint32 travelPartyMaxConcurrent = 10;
+    uint32 travelPartyClosestTownPct = 0;
+    uint32 travelPartyRaidPct = 0;
+    uint32 travelPartyLowLevelBand = 30;
+    float travelPartyLowLevelMaxRoute = 6000.0f;
+    bool travelPartyRequirePlayerZone = false;
+    bool travelPartyEnterInstance = false;
+    uint32 travelPartyMaxDeaths = 3;
+    float travelPartyArriveZ = 150.0f;
+    std::string travelPartyLeaderStrip = "-travel,-grind,-rpg,-loot,-gather";
     bool enableGreet;
     // Seconds before the same real player may be greeted again by the same bot.
     uint32 greetCooldown;

@@ -105,6 +105,7 @@ if(TORTOISE_MODULE_CMAKE_PHASE STREQUAL "DISCOVERY")
     "${TORTOISEBOTS_ROOT}/runtime/HireProvisionService.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/HireLifecycle.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/LftBotFillService.cpp"
+    "${TORTOISEBOTS_ROOT}/runtime/TravelPartyService.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/AhMarketService.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/BattlegroundQueueService.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/PlayerbotAIStorage.cpp"

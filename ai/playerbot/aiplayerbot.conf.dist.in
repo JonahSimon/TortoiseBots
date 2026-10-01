@@ -1505,6 +1505,35 @@ AiPlayerbot.WorldPvpSeek = 0
 # strategies. Ignored while WorldPvpSeek = 0. Toggle one bot with "nc +world pvp" / "nc -world pvp".
 AiPlayerbot.WorldPvpSeekBotPercent = 25
 
+# Overland travel parties: 2-5 random bots of one faction muster at a town and walk to a dungeon
+# or raid door (runtime/TravelDestinations.h), fighting and resting on the way, then disband.
+# Members hold the Dungeon activity lease while marching. Progress goes to F2_travel.log in the
+# server's working directory. Default 0.
+AiPlayerbot.TravelParties = 0
+# Seconds between attempts to form a party (0 = never).
+AiPlayerbot.TravelPartySpawnInterval = 60
+# Parties marching at once.
+AiPlayerbot.TravelPartyMaxConcurrent = 10
+# Percent of dungeon parties that muster at the closest friendly town instead of a capital.
+AiPlayerbot.TravelPartyClosestTownPct = 0
+# Percent of attempts that pick a raid door (from a capital) instead of a dungeon. 0 = raids are
+# ordinary destinations.
+AiPlayerbot.TravelPartyRaidPct = 0
+# Destinations whose band tops out at or below this level muster at the closest town and skip
+# routes longer than TravelPartyLowLevelMaxRoute yards.
+AiPlayerbot.TravelPartyLowLevelBand = 30
+AiPlayerbot.TravelPartyLowLevelMaxRoute = 6000
+# Only form a party whose route crosses a zone a real player is in.
+AiPlayerbot.TravelPartyRequirePlayerZone = 0
+# On arrival, teleport a dungeon party inside as the door would. Raids are never entered.
+AiPlayerbot.TravelPartyEnterInstance = 0
+# Leader revives before the party gives up (followers are always revived).
+AiPlayerbot.TravelPartyMaxDeaths = 3
+# Vertical slack, in yards, for arriving at a door below a cliff the navmesh does not cover.
+AiPlayerbot.TravelPartyArriveZ = 150
+# Strategies removed from the leader while it marches.
+AiPlayerbot.TravelPartyLeaderStrip = "-travel,-grind,-rpg,-loot,-gather"
+
 # Spells every random bot will learn on randomize. Keep this list limited to
 # spells present in the Vanilla/Tortoise data set.
 #AiPlayerbot.RandomBotSpellIds = 1

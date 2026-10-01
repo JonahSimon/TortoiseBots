@@ -1,6 +1,7 @@
 #include "RandomBotService.h"
 #include "BotActivityLease.h"
 #include "BotManager.h"
+#include "TravelPartyService.h"
 #include "GearSeedingGuard.h"
 #include "HireLifecycle.h"
 #include "../host/BotSessionAdapter.h"
@@ -1579,6 +1580,7 @@ void RandomBotService::Update(uint32_t diff)
         }
     }
 
+    TravelPartyService::Instance().Update();
     MaintainOnlinePool();
 }
 

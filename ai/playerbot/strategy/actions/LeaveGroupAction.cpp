@@ -2,6 +2,7 @@
 #include "playerbot/GroupMembers.h"
 #include "playerbot/playerbot.h"
 #include "../../runtime/PlayerbotAIStorage.h" // Headless storage shim
+#include "runtime/BotActivityLease.h"
 #include "LeaveGroupAction.h"
 
 namespace ai
@@ -63,6 +64,10 @@ namespace ai
             return false;
 
         if (!bot->GetGroup())
+            return false;
+
+        // A crew run by another module (travel parties) owns its bot-only group until it disbands it.
+        if (TortoiseBots::BotActivityLeaseManager::Instance().GetActivity(bot->GetGUIDLow()) == TortoiseBots::BotActivity::Dungeon)
             return false;
 
         Player* groupMaster = ai->GetGroupMaster();

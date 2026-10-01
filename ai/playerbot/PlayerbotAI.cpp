@@ -6035,6 +6035,11 @@ ActivePiorityType PlayerbotAI::GetPriorityType()
     if (IsRealPlayer())
         return ActivePiorityType::IS_REAL_PLAYER;
 
+    // A crew run by another module (travel parties) is bots only and often far from any player;
+    // throttled, it would stop walking.
+    if (TortoiseBots::BotActivityLeaseManager::Instance().GetActivity(bot->GetGUIDLow()) == TortoiseBots::BotActivity::Dungeon)
+        return ActivePiorityType::IS_ALWAYS_ACTIVE;
+
     Group* group = bot->GetGroup();
     if (group)
     {
