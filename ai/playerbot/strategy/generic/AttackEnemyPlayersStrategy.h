@@ -30,4 +30,22 @@ namespace ai
         // fire from the non-combat engine too.
         void InitNonCombatTriggers(std::list<TriggerNode*> &triggers) override;
     };
+
+    // Open-world PvP seeking (AiPlayerbot.WorldPvpSeek). EnemyPlayersValue only scans the open world
+    // for bots holding this strategy. AiFactory puts it in the NON-COMBAT engine, where "pvp" never
+    // is, so the inherited non-combat trigger is what lets an idle bot start the fight; without it
+    // only a bot already fighting a mob would ever turn on a player.
+    class WorldPvpStrategy : public AttackEnemyPlayersStrategy
+    {
+    public:
+        WorldPvpStrategy(PlayerbotAI* ai) : AttackEnemyPlayersStrategy(ai) {}
+        std::string getName() override { return "world pvp"; }
+#ifdef GenerateBotHelp
+        virtual std::string GetHelpName() { return "world pvp"; } //Must equal iternal name
+        virtual std::string GetHelpDescription() {
+            return "This bot will attack nearby PvP-flagged enemy players in the open world instead of only fighting back. Needs AiPlayerbot.WorldPvpSeek enabled.";
+        }
+        virtual std::vector<std::string> GetRelatedStrategies() { return { "pvp" }; }
+#endif
+    };
 }
