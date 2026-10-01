@@ -64,6 +64,7 @@ private:
     void Disband(Party& p);
 
     std::vector<Party> m_parties;
+    std::vector<ObjectGuid> m_pendingReset;  // disbanded mid-teleport, strategies reset on landing
     uint32_t m_lastSpawn = 0;
 };
 
