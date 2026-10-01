@@ -176,6 +176,7 @@ if(TORTOISE_MODULE_CMAKE_PHASE STREQUAL "DISCOVERY")
     "${TORTOISEBOTS_ROOT}/runtime/ClaimLifecycle.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/AltBotService.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/LftBotFillService.cpp"
+    "${TORTOISEBOTS_ROOT}/runtime/TravelPartyService.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/AhMarketService.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/BattlegroundQueueService.cpp"
     "${TORTOISEBOTS_ROOT}/runtime/PlayerbotAIStorage.cpp"

@@ -3,6 +3,7 @@
 #include "BotManager.h"
 #include "PlayerbotAIStorage.h"
 #include "playerbot/PlayerbotAI.h"
+#include "TravelPartyService.h"
 #include "GearSeedingGuard.h"
 #include "runtime/policy/pvp/WorldPvpSeekPolicy.h"
 #include "runtime/policy/pvp/WorldPvpFightPolicy.h"
@@ -1767,6 +1768,7 @@ void RandomBotService::Update(uint32_t diff)
         }
     }
 
+    TravelPartyService::Instance().Update();
     MaintainOnlinePool();
 }
 
